@@ -60,7 +60,7 @@ export default class App extends Component {
  * @param {string} query The string sent to Flickr to search
  */
   performSearch = (query) => {
-    axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&sort=interestingness-desc&format=json&nojsoncallback=1`)
+    axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&sort=interestingness-asc&format=json&nojsoncallback=1`)
       .then(response => {
         this.setState({
           images: response.data.photos.photo,
@@ -85,7 +85,7 @@ export default class App extends Component {
             <Route path="/search/" render={(props) => <PhotoList loading={this.state.loading} query={this.state.queryText} data={this.state.images} /> } />
             <Route path="/search/JiuJitsu" />
             <Route path="/search/wrestling" />
-            <Route path="/search/MixedMartialArts" />
+            <Route path="/search/grappling" />
             <Route>
               <NotFound />
             </Route>
