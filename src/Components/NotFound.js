@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Home = props => (
+const Home = () => (
     <div>
         <h3>Oops! That page does not exist!</h3>
     </div>

@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
+/**
+ * Handles the app's search functionality, both when the actual search
+ * button is clicked and when the enter key is pressed for a search
+ */
 class SearchForm extends Component {
     state = {
         searchText: ''
@@ -15,10 +19,8 @@ class SearchForm extends Component {
     handleSubmit = e => {
         e.preventDefault();
         this.props.onSearch(this.state.searchText);
-        console.log(e)
         let path = `${this.state.searchText}`
         this.props.history.push(path);
-        // console.log(path)
         e.currentTarget.reset();
     }
 

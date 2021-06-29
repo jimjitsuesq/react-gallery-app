@@ -1,11 +1,7 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import {
-  BrowserRouter,
   Route,
   Switch,
-  Redirect,
-  withRouter,
-  useLocation
 } from 'react-router-dom';
 import axios from 'axios';
 
@@ -17,9 +13,6 @@ import Nav from './Components/Nav';
 import SearchForm from './Components/SearchForm.js';
 import NotFound from './Components/NotFound.js';
 import Home from './Components/Home.js';
-import NoMatch from './Components/NoMatch.js';
-// import SearchResults from './Components/SearchResults.js';
-// import { useFetch } from './useFetch.js';
 
 export default class App extends Component {
   constructor () {
@@ -27,72 +20,53 @@ export default class App extends Component {
     this.state = {
       images: [],
       loading : true,
+      currentLocation: '',
       queryText: ''
-      // currentLocation: window.location.pathname
     };
   }
-
- 
-  
-  didSearchUpdate = (str) => {
-    const currentRoute = `${window.location.pathname}`
-    if ( currentRoute !== this.state.queryText ) {
-      this.setState({queryText: currentRoute})
-      
-    }
-    
-  }
-
+/**
+ * Performs a new photo search when the page updates and also handles the back
+ * and forward button page updates
+ */
   componentDidUpdate() {
-    if (this.state.queryText !== window.location.pathname) {
-      console.log('componentDidUpdate')
-      // let str = (window.location.pathname).slice(8)
-      // this.performSearch(str)
-      // this.setState({queryText: window.location.pathname})
+    if (this.state.currentLocation !== window.location.pathname) {
       this.getSearchString(window.location.pathname)
     }
-    window.onpopstate  = (e) => {
+    window.onpopstate  = () => {
       this.getSearchString(window.location.pathname)
-  } 
+    } 
   }
-
+/**
+ * Handles the initial loading of the page, as well as if a user types a URL
+ * directly into browser address bar
+ */
   componentDidMount() {
-    if (this.state.queryText !== window.location.pathname) {
-      console.log('componentDidMount')
-      // let str = (window.location.pathname).slice(8)
-      // this.performSearch(str)
-      // this.setState({queryText: window.location.pathname})
+    if (this.state.currentLocation !== window.location.pathname) {
       this.getSearchString(window.location.pathname)
-  }}
-
-  /* componentDidMount() {    
-    // this.setState({queryText: currentRoute})
-    this.performSearch(this.state.queryText)
-    console.log(this.state.queryText)
-  } */
-
+    }
+  }
+/**
+ * Modifies the window location passed by the calling component used to get 
+ * the search string
+ * @param {string} str The value a component passes to the performSearch 
+ * function to perform the search 
+ */
   getSearchString = (str) => {
     str = (str).slice(8)
     this.performSearch(str)
-    // this.setState({queryText: window.location.pathname})
-    console.log('getSearchString', str)
-    // this.setState({
-    //   queryText: str
-    // })
-    // this.performSearch(str)
   }
-
+/**
+ * The function that performs the photo search
+ * @param {string} query The string sent to Flickr to search
+ */
   performSearch = (query) => {
-    axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`)
+    axios.get(`https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&sort=interestingness-desc&format=json&nojsoncallback=1`)
       .then(response => {
-        console.log(response)
-        console.log(this.state.queryText)
-        console.log(window.location.pathname)
-        console.log(query)
         this.setState({
           images: response.data.photos.photo,
           loading: false,
-          queryText: window.location.pathname
+          currentLocation: window.location.pathname,
+          queryText: query
         });
       })
       .catch(error => {
@@ -100,18 +74,7 @@ export default class App extends Component {
       });
   }
 
-/*   usePageViews = () => {
-    location = useLocation()
-
-    useEffect( () => {
-      ga.send(['pageview', location.pathname])
-     }, 
-     [location]);
-  } */
-
-  render() {
-    // this.usePageViews() 
-    
+  render() { 
     return (
       <div className="container">
         <SearchForm onSearch={this.getSearchString} />
@@ -120,16 +83,9 @@ export default class App extends Component {
           <Switch>
             <Route exact path="/" component={Home}/>
             <Route path="/search/" render={(props) => <PhotoList loading={this.state.loading} query={this.state.queryText} data={this.state.images} /> } />
-            <Route exact path="/search/JiuJitsu">
-                {/* <Redirect to="/search/JiuJitsu" /> */}
-            </Route>
-            <Route exact path="/search/wrestling">
-                {/* <Redirect to="/search/wrestling"/> */}
-            </Route>
-            <Route exact path="/search/MixedMartialArts">
-                {/* <Redirect to="/search/MixedMartialArts" /> */}
-            </Route>
-            <Route path="/NoMatch" component={NoMatch} />
+            <Route path="/search/JiuJitsu" />
+            <Route path="/search/wrestling" />
+            <Route path="/search/MixedMartialArts" />
             <Route>
               <NotFound />
             </Route>
@@ -137,6 +93,5 @@ export default class App extends Component {
         </div>
       </div>
     );
-    
   }
 }
