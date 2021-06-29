@@ -12,8 +12,6 @@ class SearchForm extends Component {
 
     onSearchChange = e => {
         this.setState({ searchText: '/search/' + e.target.value})
-        console.log(e.target.value)
-        console.log(this.state.searchText)
     }
 
     handleSubmit = e => {
