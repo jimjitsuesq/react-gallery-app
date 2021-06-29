@@ -17,6 +17,7 @@ import Nav from './Components/Nav';
 import SearchForm from './Components/SearchForm.js';
 import NotFound from './Components/NotFound.js';
 import Home from './Components/Home.js';
+import NoMatch from './Components/NoMatch.js';
 // import SearchResults from './Components/SearchResults.js';
 // import { useFetch } from './useFetch.js';
 
@@ -118,7 +119,7 @@ export default class App extends Component {
         <div className="photo-container">
           <Switch>
             <Route exact path="/" component={Home}/>
-            <Route path="/search/" render={(props) => <PhotoList query={this.state.queryText} data={this.state.images} /> } />
+            <Route path="/search/" render={(props) => <PhotoList loading={this.state.loading} query={this.state.queryText} data={this.state.images} /> } />
             <Route exact path="/search/JiuJitsu">
                 {/* <Redirect to="/search/JiuJitsu" /> */}
             </Route>
@@ -128,7 +129,10 @@ export default class App extends Component {
             <Route exact path="/search/MixedMartialArts">
                 {/* <Redirect to="/search/MixedMartialArts" /> */}
             </Route>
-            <Route path="/NotFound" component={NotFound} />
+            <Route path="/NoMatch" component={NoMatch} />
+            <Route>
+              <NotFound />
+            </Route>
           </Switch>
         </div>
       </div>
